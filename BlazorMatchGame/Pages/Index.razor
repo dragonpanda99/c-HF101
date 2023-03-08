@@ -37,6 +37,8 @@
     <div class="row">
         <h2>Matches found: @matchesFound</h2>
         <h2>Time: @timeDisplay</h2>
+        <h2>Best score: @(bestScore.HasValue ? (bestScore.Value / 10F).ToString("0.0s") : "-")</h2>
+
     </div>
 </div>
 
@@ -54,6 +56,9 @@
     Timer? timer;
     int tenthsOfSecondsElapsed = 0;
     string? timeDisplay;
+    int? bestScore = null;
+
+
 
     protected override void OnInitialized()
     {
@@ -90,32 +95,6 @@
         return animals8;
     }
 
-    //string lastAnimalFound = string.Empty;
-
-    //private void ButtonClick(string animal)
-    //{
-    //    if (lastAnimalFound == string.Empty)
-    //    {
-    //        lastAnimalFound = animal;
-    //        timer.Start();
-    //    }
-    //    else if (lastAnimalFound == animal)
-    //    {
-    //        lastAnimalFound = string.Empty;
-    //        shuffledAnimals.RemoveAll(a => a == animal);
-    //        matchesFound++;
-    //        if (matchesFound == 8)
-    //        {
-    //            timer.Stop();
-    //            timeDisplay = $"{(tenthsOfSecondsElapsed / 10F).ToString("0.0s")} - Play Again?";
-    //            SetUpGame();
-    //        }
-    //    }
-    //    else
-    //    {
-    //        lastAnimalFound = string.Empty;
-    //    }
-    //}
 
 
     string lastAnimalFound = string.Empty;
@@ -141,6 +120,11 @@
             {
                 timer.Stop();
                 timeDisplay += " - Play Again?";
+
+                if (bestScore == null || tenthsOfSecondsElapsed < bestScore)
+                {
+                    bestScore = tenthsOfSecondsElapsed;
+                }
                 SetUpGame();
             }
         }
@@ -156,7 +140,8 @@
         {
             tenthsOfSecondsElapsed++;
             timeDisplay = (tenthsOfSecondsElapsed / 10F)
-            .ToString("0.0s"); StateHasChanged();
+            .ToString("0.0s");
+            StateHasChanged();
         });
     }
 
